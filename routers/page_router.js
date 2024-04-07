@@ -21,7 +21,7 @@ router.post('/signup_post', async (request, response) => {
     //const email = request.body.email
     //const password = request.body.password
     //const { email, password } = request.body
-    //console.log(request);
+    console.log(request.body);
     //const result = users_dal.insert_user({ email, password})
     //if (result.status === "success") {
     //response.cookie('auth',`${email}`)
