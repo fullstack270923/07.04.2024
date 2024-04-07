@@ -19,7 +19,7 @@ app.get('*', (req, response, next) => {
     console.log(req.url);
     if (req.url == "/questions.html") {
         if (!req.cookies.auth) {
-            response.status(200).redirect('./signup.html')
+            response.status(200).redirect('./login.html')
             return
         }
     }
@@ -28,7 +28,13 @@ app.get('*', (req, response, next) => {
             response.status(200).redirect('./questions.html')
             return
         }
-    }    
+    }   
+    if (req.url == "/login.html") {
+        if (req.cookies.auth) {
+            response.status(200).redirect('./questions.html')
+            return
+        }
+    }       
     if (req.url == "/logout.html") {
         response.clearCookie('auth')
     }        
@@ -40,8 +46,6 @@ app.use(express.static(path.join('.', '/static/')))
 
 app.use('/api/users', users_router)
 app.use('', page_router)
-
-
 
  const server_api = app.listen(config.server.port, () => {
      console.log(`====== express server is running on port ${config.server.port} =======`);

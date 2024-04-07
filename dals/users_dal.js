@@ -72,6 +72,12 @@ async function get_user_by_id(id) {
     }
 }
 
+async function try_login(email, password) {
+    const user = await data_base.raw(`select * from users where email LIKE '${email}' AND password LIKE '${password}';`)
+    console.log(user);
+    return user.rowCount > 0
+}
+
 async function insert_user(new_user) {
     try {
         delete new_user.id
@@ -118,5 +124,5 @@ async function delete_table() {
 module.exports = {
     get_all_users, get_user_by_id, insert_user,
     delete_user, delete_table,
-    create_table, insert_users5
+    create_table, insert_users5, try_login
 }
