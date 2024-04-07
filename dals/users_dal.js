@@ -32,6 +32,9 @@ async function create_table() {
 }
 
 async function insert_users5() {
+    // Homework: 
+    // change the code to array of json [{email: 'jon.snow@winterfell.com', password: 'LongCl4w'}]
+    // run over the array and call user_insert- so all o fthe password will be encrypted
     try {
         `INSERT INTO users (email, password) VALUES ('jon.snow@winterfell.com', 'LongCl4w');
         INSERT INTO users (email, password) VALUES ('daenerys.targaryen@dragonstone.com', 'Dracarys7');
