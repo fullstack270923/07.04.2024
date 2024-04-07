@@ -13,6 +13,7 @@ app.use(body_parser.json())
 
 app.use(cors())
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('*', (req, response, next) => {
     console.log(req.url);
