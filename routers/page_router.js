@@ -19,7 +19,7 @@ router.post('/signup_post', async (request, response) => {
     console.log(request.body);
     const result = await users_dal.insert_user({ email, password })
     if (result.status === "success") {
-        response.cookie('auth', `${email}`)
+        response.cookie('auth', `${email}_${result.data.id}`)
         response.status(200).redirect('./questions.html')
     }
     else {
@@ -31,13 +31,13 @@ router.post('/signup_post', async (request, response) => {
 router.post('/login_post', async (request, response) => {
     const { email, password } = request.body
     console.log(request.body);
-    const logged_in = await users_dal.try_login(email, password)
-    if (logged_in) {
-        response.cookie('auth', `${email}`)
+    const result = await users_dal.try_login(email, password)
+    if (result.status === "success") {
+        response.cookie('auth', `${email}_${result.id}`)
         response.status(200).redirect('./questions.html')
     }
     else {
-        response.status(200).redirect('./error_login.html')
+        response.status(200).redirect(`./error_login.html?error=${result.status}`)
     }
 })
 

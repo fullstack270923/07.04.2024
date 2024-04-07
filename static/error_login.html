@@ -47,9 +47,13 @@
 <body>
     <div class="error-container">
         <div class="error-message">
-            Failed to log in. Please try again.
+            <p id="error_msg"></p>
         </div>
         <a href="/login.html">Return to Login Page</a>
     </div>
+    <script>
+        const error = location.search.split('=')[1].replaceAll('_', ' ')
+        document.getElementById('error_msg').innerHTML = `Failed to login: ${error}.<br /> Please try again.`
+    </script>
 </body>
 </html>

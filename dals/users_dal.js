@@ -1,5 +1,6 @@
 const knex = require('knex')
 const config = require('config')
+const bcrypt = require('bcrypt');
 
 const data_base = knex({
     client: 'pg',
@@ -22,7 +23,7 @@ async function create_table() {
         console.log('create finished successfully');
         return {
             status: "success",
-        }        
+        }
     }
     catch (e) {
         console.log('create failed');
@@ -73,14 +74,35 @@ async function get_user_by_id(id) {
 }
 
 async function try_login(email, password) {
-    const user = await data_base.raw(`select * from users where email LIKE '${email}' AND password LIKE '${password}';`)
-    console.log(user);
-    return user.rowCount > 0
+    const user = await data_base.raw(`select * from users where email LIKE '${email}';`)
+    if (user.rowCount > 0) {
+        console.log(user.rows[0].password);
+        const result = await bcrypt.compare(password, user.rows[0].password)
+        if (result)
+            return {
+                status: "success",
+                id: user.rows[0].id
+            }
+        else
+            return {
+                status: "wrong_password"
+            }
+    }
+    else
+        return {
+            status: "user_does_not_exist"
+        }
 }
+
 
 async function insert_user(new_user) {
     try {
         delete new_user.id
+
+        // encryption
+        const salt = await bcrypt.genSalt();
+        new_user.password = await bcrypt.hash(new_user.password, salt);
+
         const result_ids = await data_base('users').insert(new_user).returning('id');
         //console.log(result_ids[0]);
 
@@ -120,6 +142,17 @@ async function delete_table() {
         status: "success"
     }
 }
+/*
+    CREATE TABLE orders (
+        order_id SERIAL PRIMARY KEY,
+        order_date DATE NOT NULL,
+        user_id INTEGER,
+        CONSTRAINT fk_user
+            FOREIGN KEY(user_id) 
+            REFERENCES users(user_id)
+            ON DELETE CASCADE
+    );
+*/
 
 module.exports = {
     get_all_users, get_user_by_id, insert_user,
